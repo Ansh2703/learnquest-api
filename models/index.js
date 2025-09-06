@@ -1,28 +1,25 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// This is the main connection setup.
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT, // We need the port here
+    port: process.env.DB_PORT,
     dialect: 'mysql',
-    // --- THIS IS THE CRUCIAL NEW PART ---
-    // This tells Sequelize to use an encrypted connection.
     dialectOptions: {
       ssl: {
-        // This is not strictly required by Railway, but it's good practice.
-        // It tells the connection to fail if the certificate is invalid.
-        rejectUnauthorized: true 
+        // --- THE FINAL FIX ---
+        // This tells our app: "It's okay to accept Railway's self-signed certificate."
+        rejectUnauthorized: false 
       }
     }
   }
 );
 
-// The rest of your file (loading models, defining relationships) remains the same.
+// The rest of your file remains exactly the same.
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
